@@ -63,6 +63,19 @@
       sun.overdraw = true;
       sun.rotation.x = Math.PI * 0.1;
       scene.add(sun);
+
+      for(var i = 0; i < 500; i++){
+
+        var star = new THREE.Mesh(new THREE.SphereGeometry(5, 5, 5), new THREE.MeshLambertMaterial({
+          color: 'white' 
+        }));
+        star.position.x = (Math.random() -.5 )*((Math.random()*9000)+8050);
+        star.position.y = (Math.random() -.5 )*((Math.random()*9000)+8050);
+        star.position.z = (Math.random() -.5 )*((Math.random()*9000)+8050);
+
+        scene.add(star);
+
+      }
       
       // light
       var directionalLight = new THREE.DirectionalLight(0xffffff);
@@ -92,9 +105,21 @@
           camera.position.z += 20;
           jet.rotation.z += .1;
           jet.rotation.x += .1;
+          laser_wav.play();
+          laser_wav= new Audio("laser.wav");
+
          }else if (e.keyCode == 115){
           camera.position.z -= 20;
           jet.rotation.z += .1;
+          thrust_wav.play();
+          thrust_wav = new Audio("thrust.wav")
+         }
+         else if(e.keyCode == 113){
+          camera.rotation.x += .01;
+          jet.rotation.x += .01;
+         }else if(e.keyCode == 119){
+          camera.rotation.x -= .01;
+          jet.rotation.x -= .01;
          }
         
 
