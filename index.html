@@ -20,6 +20,7 @@
  
       // this function is executed on each animation frame
       var velo = new THREE.Vector3(2, -5, -2);
+      var cameraXAngle = 0, cameraYAngle = Math.PI/2, cameraDistance = 500;
 
       function animate(){
         // update
@@ -47,6 +48,19 @@
           //console.log(gamepad.axes);
           if (jet)
             jet.rotation.set(jet.rotation.x + axes[3]/10, jet.rotation.y - axes[2]/10, jet.rotation.z);
+
+          cameraXAngle += axes[0]/100;
+          cameraYAngle += axes[1]/100;
+
+          camera.position.set(
+            cameraDistance * Math.sin(cameraXAngle),
+  //          cameraDistance * Math.cos(cameraYAngle),
+            0,
+            cameraDistance * Math.cos(cameraXAngle));
+            camera.rotation.y = cameraXAngle;
+//            camera.rotation.x = Math.PI/2 + cameraYAngle;
+
+          //console.log(500 * Math.sin(cameraXAngle), 0, 500 * Math.cos(cameraXAngle));
         }
 
         // request new frame
@@ -62,6 +76,7 @@
       // camera
       var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
       camera.position.z = 500;
+      camera.updateProjectionMatrix();
  
       // scene
       var scene = new THREE.Scene();
@@ -116,12 +131,12 @@
         console.log(e.keyCode);
 
          if(e.keyCode == 97){
-          camera.position.z += 20;
+          cameraDistance += 20;
           laser_wav.play();
           laser_wav= new Audio("laser.wav");
 
          }else if (e.keyCode == 115){
-          camera.position.z -= 20;
+          cameraDistance -= 20;
           thrust_wav.play();
           thrust_wav = new Audio("thrust.wav")
          }
@@ -133,15 +148,6 @@
         
 
       });
-
-     setInterval(function() { console.log(navigator.webkitGetGamepads()[0]); }, 1000);
-
-     var gamepad;
-     window.addEventListener("webkitGamepadConnected", function(e) {
-        gamepad = e.gamepad;
-        console.log(gamepad);
-     });
-
 
     </script>
   </body>
