@@ -30,8 +30,14 @@
  
         // render
         renderer.render(scene, camera);
- 
-        if (gamepad) console.log(gamepad.buttons);
+
+        var gamepad = navigator.webkitGetGamepads()[0];
+        if (gamepad) {
+          var axes = gamepad.axes;
+          //console.log(gamepad.axes);
+          if (jet)
+            jet.rotation.set(jet.rotation.x + axes[3]/10, jet.rotation.y - axes[2]/10, jet.rotation.z);
+        }
 
         // request new frame
         requestAnimationFrame(animate);
@@ -71,7 +77,8 @@
     loader.load('jet.json', function(geometry) {
       jet = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: 0x555555 }));
       scene.add(jet);
-
+      jet.scale.set(.4,.4,.4);
+      jet.position.set(50,50,20);
     });
 
       // start animation
@@ -85,8 +92,6 @@
           camera.position.z += 20;
           jet.rotation.z += .1;
           jet.rotation.x += .1;
-          j
-
          }else if (e.keyCode == 115){
           camera.position.z -= 20;
           jet.rotation.z += .1;
@@ -94,6 +99,8 @@
         
 
       });
+
+     setInterval(function() { console.log(navigator.webkitGetGamepads()[0]); }, 1000);
 
      var gamepad;
      window.addEventListener("webkitGamepadConnected", function(e) {
