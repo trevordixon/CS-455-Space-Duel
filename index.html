@@ -19,6 +19,8 @@
       var lastTime = 0;
  
       // this function is executed on each animation frame
+      var velo = new THREE.Vector3(2, -5, -2);
+
       function animate(){
         // update
         var time = (new Date()).getTime();
@@ -28,6 +30,14 @@
         // sun.rotation.x += angleChange /4;
         lastTime = time;
  
+        if (jet) {
+          var r = jet.position.distanceTo(sun.position);
+          var a = new THREE.Vector3().subVectors(sun.position, jet.position).normalize().multiplyScalar(.1/r*r);
+          velo.add(a);
+          jet.position.add(velo);
+          //console.log(velo);
+        }
+
         // render
         renderer.render(scene, camera);
 
@@ -91,7 +101,7 @@
       jet = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: 0x555555 }));
       scene.add(jet);
       jet.scale.set(.4,.4,.4);
-      jet.position.set(50,50,20);
+      jet.position.set(70,70,70);
     });
 
       // start animation
@@ -107,23 +117,18 @@
 
          if(e.keyCode == 97){
           camera.position.z += 20;
-          jet.rotation.z += .1;
-          jet.rotation.x += .1;
           laser_wav.play();
           laser_wav= new Audio("laser.wav");
 
          }else if (e.keyCode == 115){
           camera.position.z -= 20;
-          jet.rotation.z += .1;
           thrust_wav.play();
           thrust_wav = new Audio("thrust.wav")
          }
          else if(e.keyCode == 113){
           camera.rotation.x += .01;
-          jet.rotation.x += .01;
          }else if(e.keyCode == 119){
           camera.rotation.x -= .01;
-          jet.rotation.x -= .01;
          }
         
 
