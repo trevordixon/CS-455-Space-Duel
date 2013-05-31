@@ -5,15 +5,14 @@
       body {
         margin: 0px;
         padding: 0px;
+        background-color: #000;
       }
     </style>
   </head>
   <body>
     <div id="container"></div>
-    <script src="http://code.jquery.com/jquery-latest.min.js"
-        type="text/javascript"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="three.js"></script>
-    <script src="gamepad.js"></script>
     <script defer="defer">
       // revolutions per second
       var angularSpeed = 0.2; 
@@ -24,18 +23,19 @@
         // update
         var time = (new Date()).getTime();
         var timeDiff = time - lastTime;
-        var angleChange = angularSpeed * timeDiff * 2 * Math.PI / 1000;
-        cube.rotation.y += angleChange;
-        cube.rotation.x += angleChange /4;
+        // var angleChange = angularSpeed * timeDiff * 2 * Math.PI / 1000;
+        // sun.rotation.y += angleChange;
+        // sun.rotation.x += angleChange /4;
         lastTime = time;
  
         // render
         renderer.render(scene, camera);
  
+        if (gamepad) console.log(gamepad.buttons);
+
         // request new frame
-        requestAnimationFrame(function(){
-            animate();
-        });
+        requestAnimationFrame(animate);
+
       }
 
       // renderer
@@ -50,18 +50,30 @@
       // scene
       var scene = new THREE.Scene();
                 
-      // cube
-      var cube = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), new THREE.MeshLambertMaterial({
-        color: 'blue' 
+      // sun
+      var sun = new THREE.Mesh(new THREE.SphereGeometry(50, 50, 16), new THREE.MeshLambertMaterial({
+        color: 'yellow' 
       }));
-      cube.overdraw = true;
-      cube.rotation.x = Math.PI * 0.1;
-      scene.add(cube);
+      sun.overdraw = true;
+      sun.rotation.x = Math.PI * 0.1;
+      scene.add(sun);
       
+      // light
       var directionalLight = new THREE.DirectionalLight(0xffffff);
       directionalLight.position.set(10, 0, 10).normalize();
       scene.add(directionalLight);
- 
+      
+      var ambientLight = new THREE.AmbientLight(0x111111);
+      scene.add(ambientLight);
+
+      // loader
+    var loader = new THREE.JSONLoader(), jet;
+    loader.load('jet.json', function(geometry) {
+      jet = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: 0x555555 }));
+      scene.add(jet);
+
+    });
+
       // start animation
       animate();
 
@@ -71,21 +83,24 @@
 
          if(e.keyCode == 97){
           camera.position.z += 20;
+          jet.rotation.z += .1;
+          jet.rotation.x += .1;
+          j
 
          }else if (e.keyCode == 115){
           camera.position.z -= 20;
+          jet.rotation.z += .1;
          }
         
 
       });
 
-    var gamepads = navigator.getGamepads();
+     var gamepad;
+     window.addEventListener("webkitGamepadConnected", function(e) {
+        gamepad = e.gamepad;
+        console.log(gamepad);
+     });
 
-    for (var i = 0; i < gamepads.length; ++i)
-    {
-        var pad = gamepads[i];
-        console.log(pad);
-    }
 
     </script>
   </body>
