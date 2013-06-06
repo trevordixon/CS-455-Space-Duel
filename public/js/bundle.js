@@ -55,11 +55,6 @@
     var gamepad = navigator.webkitGetGamepads()[0];
     var scene = new THREE.Scene;
     var p1 = new Spaceship('red', gamepad, scene);
-    var directionalLight = new THREE.DirectionalLight(16777215);
-    directionalLight.position.set(10, 0, 10).normalize();
-    scene.add(directionalLight);
-    var ambientLight = new THREE.AmbientLight(1118481);
-    scene.add(ambientLight);
     var sun = new THREE.Mesh(new THREE.SphereGeometry(50, 50, 16), new THREE.MeshLambertMaterial({ color: 'yellow' }));
     sun.overdraw = true;
     sun.rotation.x = Math.PI * .1;
