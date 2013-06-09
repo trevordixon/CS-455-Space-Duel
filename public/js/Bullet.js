@@ -1,33 +1,35 @@
 var THREE = require('three');
 
-function Bullet(player, scene){
-
-	this.team = player;
+function Bullet(spaceship, scene){
+	this.spaceship = spaceship;
 	this.scene = scene;
 
-	this.bulletShape = new THREE.Mesh(new THREE.SphereGeometry(), new THREE.MeshLambertMaterial({
-		color: this.team == 'red' ? "ff0000" : "#0000ff"
+	this.mesh = new THREE.Mesh(new THREE.SphereGeometry(5, 5, 5), new THREE.MeshLambertMaterial({
+		color: 0x0000FF
 	}));
 
-	this.bulletShape.overdraw = true;
-	this.scene.add(this.bulletShape);
+	this.mesh.overdraw = true;
+	this.scene.add(this.mesh);
 
-	console.log("Hey");
+	var dir = new THREE.Vector3(0, 0, 1).applyMatrix4(spaceship.camera.matrixWorld).normalize();
 
+	this.velocity = spaceship.velocity.clone().add(dir.multiplyScalar(10));
+	this.mesh.position = spaceship.mesh.position.clone();
 }
 
+var sunPosition = new THREE.Vector3(0, 0, 0);
+
 Bullet.prototype = {
-	addToScene : function(){
-		this.scene.add(this.bulletShape);
-	},
-	setPosition : function(vector){
-		this.position = vector;
-	},
-	setVelocity : function(vel){
-		this.velocity = vel;
-	},
-	setLife : function(alive){
-		this.alive = alive;
+	tick: function(time) {
+		var r = this.mesh.position.distanceTo(sunPosition);
+		var a = new THREE.Vector3().subVectors(sunPosition, this.mesh.position).normalize().multiplyScalar(.1 / r*r);
+		this.velocity.add(a);
+		this.mesh.position.add(this.velocity);
+
+		if (r < 50) {
+			// TODO: also need to remove bullet from array in main.js
+			this.scene.remove(this.mesh);
+		}
 	}
 }
 
