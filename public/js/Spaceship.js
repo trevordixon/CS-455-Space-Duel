@@ -27,7 +27,7 @@ Spaceship.prototype.setVelocity = function(velocity) {
 var sunPosition = new THREE.Vector3(0, 0, 0);
 Spaceship.prototype.tick = function(time, camera) {
 	var r = this.mesh.position.distanceTo(sunPosition);
-	var a = new THREE.Vector3().subVectors(sunPosition, this.mesh.position).normalize().multiplyScalar(.1/r*r);
+	var a = new THREE.Vector3().subVectors(sunPosition, this.mesh.position).normalize().multiplyScalar(.1 / r*r);
 	this.velocity.add(a);
 	this.mesh.position.add(this.velocity);
 

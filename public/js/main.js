@@ -2,7 +2,20 @@ var THREE = require('three'),
 	Spaceship = require('./Spaceship.js');
 
 var gamepad = navigator.webkitGetGamepads()[0];
+
 var scene = new THREE.Scene();
+
+// renderer
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+require('./addLight.js')(scene);
+
+// camera
+var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+
+
 var p1 = new Spaceship('red', gamepad, scene);
 
 var sun = new THREE.Mesh(new THREE.SphereGeometry(50, 50, 16), new THREE.MeshLambertMaterial({
@@ -14,9 +27,7 @@ scene.add(sun);
 
 require('./createStars.js')(scene);
 
-// this function is executed on each animation frame
 var cameraXAngle = 0, cameraYAngle = Math.PI/2, cameraDistance = 800;
-
 
 var lastTime = 0;
 function animate(){
@@ -27,9 +38,6 @@ function animate(){
 	lastTime = time;
 
 	p1.tick(time, camera);
-
-	// render
-	renderer.render(scene, camera);
 
 	require('./checkForGamepad.js')(function(_gamepad) {
 		gamepad = _gamepad;
@@ -44,7 +52,8 @@ function animate(){
 
 		camera.position.set(
 			cameraDistance * Math.sin(cameraXAngle),
-			cameraDistance * Math.cos(cameraYAngle),
+			//cameraDistance * Math.cos(cameraYAngle),
+			0,
 			cameraDistance * Math.cos(cameraXAngle)
 		);
 
@@ -54,17 +63,8 @@ function animate(){
 		//console.log(500 * Math.sin(cameraXAngle), 0, 500 * Math.cos(cameraXAngle));
 	}
 
-	// request new frame
+	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
-
 }
-
-// renderer
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-
-// camera
-var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 
 animate();

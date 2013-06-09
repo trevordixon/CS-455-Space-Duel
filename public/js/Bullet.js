@@ -1,4 +1,3 @@
-
 var THREE = require('three');
 
 function Bullet(player, scene){
