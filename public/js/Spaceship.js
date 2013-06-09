@@ -17,7 +17,7 @@ function Spaceship(color, gamepad, scene) {
 Spaceship.prototype.setGamepad = function(gamepad) {
 	this.gamepad = gamepad;
 	return this;
-}
+};
 
 Spaceship.prototype.setVelocity = function(velocity) {
 	this.velocity = velocity;
