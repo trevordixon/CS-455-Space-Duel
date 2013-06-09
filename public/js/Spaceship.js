@@ -8,10 +8,18 @@ function Spaceship(color, gamepad, scene) {
 
 	this.mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: 0x555555 }));
 
+	this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+	this.camera.position.y = 800;
+	this.camera.position.z = 200;
+	this.camera.rotation.y = Math.PI;
+	this.camera.rotation.x = Math.PI/2;
+	window.p1cam = this.camera;
+	this.mesh.add(this.camera);
+
 	scene.add(this.mesh);
 
 	this.mesh.scale.set(.4,.4,.4);
-	this.mesh.position.set(70,70,70);
+	this.mesh.position.set(200, 200, 200);
 }
 
 Spaceship.prototype.setGamepad = function(gamepad) {

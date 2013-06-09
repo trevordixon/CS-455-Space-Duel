@@ -13,8 +13,8 @@ document.body.appendChild(renderer.domElement);
 require('./addLight.js')(scene);
 
 // camera
-var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-
+var camera,
+	mainCamera = camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 
 var p1 = new Spaceship('red', gamepad, scene);
 
@@ -30,6 +30,7 @@ require('./createStars.js')(scene);
 var cameraXAngle = 0, cameraYAngle = Math.PI/2, cameraDistance = 800;
 
 var lastTime = 0;
+var prevButton11 = 0;
 function animate(){
 	// update
 	var time = (new Date()).getTime();
@@ -45,22 +46,33 @@ function animate(){
 	});
 
 	if (gamepad) {
-		var axes = gamepad.axes;
+		var axes = gamepad.axes,
+			buttons = gamepad.buttons;
+
+		if (buttons[4]) {
+			cameraDistance += axes[1] * 20;
+		} else {
+			cameraYAngle += axes[1]/100;
+		}
 
 		cameraXAngle += axes[0]/100;
-		cameraYAngle += axes[1]/100;
 
-		camera.position.set(
+		mainCamera.position.set(
 			cameraDistance * Math.sin(cameraXAngle),
-			//cameraDistance * Math.cos(cameraYAngle),
-			0,
+			cameraDistance * Math.cos(cameraYAngle),
 			cameraDistance * Math.cos(cameraXAngle)
 		);
 
-		camera.rotation.y = cameraXAngle;
-		camera.rotation.x = Math.PI/2 + cameraYAngle;
+		// mainCamera.rotation.y = cameraXAngle;
+		// mainCamera.rotation.x = Math.PI/2 + cameraYAngle;
+		mainCamera.lookAt(sun.position);
 
-		//console.log(500 * Math.sin(cameraXAngle), 0, 500 * Math.cos(cameraXAngle));
+
+		if (buttons[11] && buttons[11] != prevButton11) {
+			camera = camera == p1.camera ? mainCamera : p1.camera;
+		}
+
+		prevButton11 = buttons[11];
 	}
 
 	renderer.render(scene, camera);

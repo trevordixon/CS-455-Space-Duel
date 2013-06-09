@@ -3,7 +3,7 @@ var THREE = require('three');
 module.exports = function(scene) {
 	for(var i = 0; i < 500; i++){
 		var star = new THREE.Mesh(new THREE.SphereGeometry(5, 5, 5), new THREE.MeshLambertMaterial({
-			color: 'white' 
+			color: 'white'
 		}));
 		
 		star.position.set(
