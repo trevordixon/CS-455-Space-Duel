@@ -35,6 +35,7 @@ Spaceship.prototype = {
 		this.velocity.add(a);
 		this.mesh.position.add(this.velocity);
 
+		if (!this.gamepad) return;
 		var axes = this.gamepad.axes;
 		this.mesh.rotation.set(
 			this.mesh.rotation.x + axes[3]/10,

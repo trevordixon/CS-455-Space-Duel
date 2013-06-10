@@ -63,17 +63,6 @@ function animate(){
 
 		cameraXAngle += axes[0]/100;
 
-		mainCamera.position.set(
-			cameraDistance * Math.sin(cameraXAngle),
-			cameraDistance * Math.cos(cameraYAngle),
-			cameraDistance * Math.cos(cameraXAngle)
-		);
-
-		// mainCamera.rotation.y = cameraXAngle;
-		// mainCamera.rotation.x = Math.PI/2 + cameraYAngle;
-		mainCamera.lookAt(sun.position);
-
-
 		if (buttons[11] && buttons[11] != prevButton11) {
 			camera = camera == p1.camera ? mainCamera : p1.camera;
 		}
@@ -87,6 +76,16 @@ function animate(){
 
 		prevButton7 = buttons[7] > 0.3;
 	}
+
+	mainCamera.position.set(
+		cameraDistance * Math.sin(cameraXAngle),
+		cameraDistance * Math.cos(cameraYAngle),
+		cameraDistance * Math.cos(cameraXAngle)
+	);
+
+	// mainCamera.rotation.y = cameraXAngle;
+	// mainCamera.rotation.x = Math.PI/2 + cameraYAngle;
+	mainCamera.lookAt(sun.position);
 
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);
