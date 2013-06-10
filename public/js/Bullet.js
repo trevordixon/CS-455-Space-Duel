@@ -11,10 +11,9 @@ function Bullet(spaceship, scene){
 	this.mesh.overdraw = true;
 	this.scene.add(this.mesh);
 
-	var dir = new THREE.Vector3(0, 0, 1).applyMatrix4(spaceship.camera.matrixWorld).normalize();
-
+	var dir = spaceship.getDirection();
 	this.velocity = spaceship.velocity.clone().add(dir.multiplyScalar(10));
-	this.mesh.position = spaceship.mesh.position.clone();
+	this.mesh.position = spaceship.mesh.position.clone().add(dir.multiplyScalar(10));
 }
 
 var sunPosition = new THREE.Vector3(0, 0, 0);

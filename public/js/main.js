@@ -28,7 +28,7 @@ scene.add(sun);
 
 require('./createStars.js')(scene);
 
-var cameraXAngle = 0, cameraYAngle = Math.PI/2, cameraDistance = 800;
+var cameraXAngle = 0, cameraYAngle = Math.PI/2, cameraDistance = 1200;
 
 var gravityObjects = [p1];
 
@@ -83,8 +83,6 @@ function animate(){
 		cameraDistance * Math.cos(cameraXAngle)
 	);
 
-	// mainCamera.rotation.y = cameraXAngle;
-	// mainCamera.rotation.x = Math.PI/2 + cameraYAngle;
 	mainCamera.lookAt(sun.position);
 
 	renderer.render(scene, camera);
