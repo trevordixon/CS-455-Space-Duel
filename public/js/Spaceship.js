@@ -4,7 +4,7 @@ var THREE = require('three'),
 function Spaceship(color, gamepad, scene) {
 	this.color = color;
 	this.gamepad = gamepad;
-	this.velocity = new THREE.Vector3(2, -5, -2);
+	this.velocity = new THREE.Vector3(5, -5, 0);
 
 	this.mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: color }));
 
@@ -18,7 +18,7 @@ function Spaceship(color, gamepad, scene) {
 	scene.add(this.mesh);
 
 	this.mesh.scale.set(.4,.4,.4);
-	this.mesh.position.set(200, 200, 200);
+	this.mesh.position.set(200, 200, 0);
 }
 
 var sunPosition = new THREE.Vector3(0, 0, 0);
