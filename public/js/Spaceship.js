@@ -26,7 +26,7 @@ function Spaceship(color, gamepad, scene) {
 	);
 
 	this.mesh.scale.set(.4, .4, .4);
-	this.mesh.position.set(200, 200, 0);
+	this.mesh.position.set(500, 500, 0);
 }
 
 var sunPosition = new THREE.Vector3(0, 0, 0);
@@ -46,17 +46,22 @@ Spaceship.prototype = {
 
 	tick: function(time) {
 		var r = this.mesh.position.distanceTo(sunPosition);
-		var a = new THREE.Vector3().subVectors(sunPosition, this.mesh.position).normalize().multiplyScalar(.1 / r*r);
+		var a = new THREE.Vector3().subVectors(sunPosition, this.mesh.position).normalize().multiplyScalar(.3 / r*r);
 		this.velocity.add(a);
+
+		if (this.gamepad) {
+			var axes = this.gamepad.axes;
+
+			this.yaw -= axes[3]/10;
+			this.pitch -= axes[2]/10;
+
+			this.mesh.rotation.set(this.yaw, this.pitch, 0);
+
+			var dir = this.getDirection();
+			this.velocity.add(dir.multiplyScalar(this.gamepad.buttons[6] * .15));
+		}
+
 		this.mesh.position.add(this.velocity);
-
-		if (!this.gamepad) return;
-		var axes = this.gamepad.axes;
-
-		this.yaw -= axes[3]/10;
-		this.pitch -= axes[2]/10;
-
-		this.mesh.rotation.set(this.yaw, this.pitch, 0);
 	}
 };
 

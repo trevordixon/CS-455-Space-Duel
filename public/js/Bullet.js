@@ -21,7 +21,7 @@ var sunPosition = new THREE.Vector3(0, 0, 0);
 Bullet.prototype = {
 	tick: function(time) {
 		var r = this.mesh.position.distanceTo(sunPosition);
-		var a = new THREE.Vector3().subVectors(sunPosition, this.mesh.position).normalize().multiplyScalar(.1 / r*r);
+		var a = new THREE.Vector3().subVectors(sunPosition, this.mesh.position).normalize().multiplyScalar(.2 / r*r);
 		this.velocity.add(a);
 		this.mesh.position.add(this.velocity);
 
