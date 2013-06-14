@@ -3,12 +3,13 @@ var express = require('express'),
 
 var app = express();
 
+var bundleModules = ['three', 'underscore', 'events'];
+
 app.get('/js/main.js', browserify('./public/js/main.js', {
-	external: ['three'],
+	external: bundleModules,
 	detectGlobals: false
 }));
 
-var bundleModules = ['three', 'underscore', 'events'];
 app.get('/js/bundle.js', browserify(bundleModules, {
 	noParse: bundleModules,
 	cache: true,
