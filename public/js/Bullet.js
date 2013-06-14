@@ -30,7 +30,7 @@ _.extend(Bullet.prototype, GravityObject.prototype, {
 	tick: function(time) {
 		GravityObject.prototype.tick.apply(this, arguments);
 
-		if (this.distanceToSun() < 50) this.remove();
+		if (this.distanceToSun() < 50 /* hard coded sun radius */) this.remove();
 	},
 
 	checkCollision: function(objs) {

@@ -68,6 +68,14 @@ _.extend(Spaceship.prototype, GravityObject.prototype, {
 
 		this.controls.update(0.2);
 		GravityObject.prototype.tick.apply(this, arguments);
+	},
+
+	watchForJoystickRoll: function() {
+		this.controls._watchForJoystickRoll = true;
+	},
+
+	dontWatchForJoystickRoll: function() {
+		this.controls._watchForJoystickRoll = false;
 	}
 });
 

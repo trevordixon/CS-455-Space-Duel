@@ -51,16 +51,24 @@ function animate(){
 			axes = gamepad.axes,
 			buttons = gamepad.buttons;
 
-		if (buttons[4]) {
-			cameraDistance += axes[1] * 20;
-		} else {
-			cameraYAngle += axes[1]/100;
+		if (camera == mainCamera) {
+			if (buttons[4]) {
+				cameraDistance += axes[1] * 20;
+			} else {
+				cameraYAngle += axes[1]/100;
+			}
+
+			cameraXAngle += axes[0]/100;
 		}
 
-		cameraXAngle += axes[0]/100;
-
 		if (buttons[11] && buttons[11] != prevButton11) {
-			camera = camera == p1.camera ? mainCamera : p1.camera;
+			if (camera == mainCamera) {
+				camera = p1.camera;
+				p1.watchForJoystickRoll();
+			} else {
+				camera = mainCamera;
+				p1.dontWatchForJoystickRoll();
+			}
 		}
 
 		prevButton11 = buttons[11];

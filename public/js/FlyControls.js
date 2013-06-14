@@ -42,8 +42,12 @@ THREE.FlyControls = function ( object, domElement ) {
 		if (gpManager.gamepad) {
 			this.moveState.yawLeft   = -gpManager.gamepad.axes[2];
 			this.moveState.pitchDown =   gpManager.gamepad.axes[3];
-			this.moveState.rollLeft = gpManager.gamepad.buttons[15] == 1;
-			this.moveState.rollRight = gpManager.gamepad.buttons[14] == 1;
+			
+			this.moveState.rollLeft = (Math.abs(gpManager.gamepad.axes[0]) < 0.15 ? 0 : (this._watchForJoystickRoll && gpManager.gamepad.axes[0])) ||
+			                          gpManager.gamepad.buttons[15]/2;
+
+			this.moveState.rollRight = (Math.abs(gpManager.gamepad.axes[1]) < 0.15 ? 0 : (this._watchForJoystickRoll && gpManager.gamepad.axes[1])) ||
+									   gpManager.gamepad.buttons[14]/2;
 
 			this.updateRotationVector();
 		}
