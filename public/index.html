@@ -5,7 +5,16 @@
 	<link rel="stylesheet" href="css/main.css">
 </head>
 <body>
+	<script src="http://cdn.peerjs.com/0/peer.min.js"></script>
 	<script src="js/bundle.js"></script>
 	<script src="js/main.js"></script>
+	<script>
+		var peer = new Peer('player-1', {host: 'localhost', port: 9000});
+		peer.on('connection', function(conn){
+			conn.on('data', function(data) {
+				console.log('Got data:', data);
+			});
+		});
+	</script>
 </body>
 </html>
