@@ -10,12 +10,62 @@
 	<script src="js/bundle.js"></script>
 	<script src="js/main.js"></script>
 	<script>
-		var peer = new Peer('player-1', {host: 'localhost', port: 9000});
-		peer.on('connection', function(conn){
-			conn.on('data', function(data) {
-				console.log('Got data:', data);
-			});
-		});
+		var Player;
+		var connectionCode;
+		var info = {'code':112233};
+
+		function sendData(data) {
+			var XHR = new XMLHttpRequest();
+			var urlEncodedData = "";
+			for(name in data) {
+				urlEncodedData += name + "=" + data[name] + "&";
+			}
+			urlEncodedData = urlEncodedData.slice(0, -1);
+			urlEncodedData = encodeURIComponent(urlEncodedData);
+			urlEncodedData = urlEncodedData.replace('%20','+').replace('%3D','=');
+			var handleRequestStateChange;
+			var url = "getPeerCode";
+
+			handleRequestStateChange = function()
+			{
+			    if (XHR.readyState==4 && XHR.status==200) 
+			    {
+			        var substring=JSON.parse(XHR.responseText);
+			        Player = substring['player'];
+			        connectionCode = substring['code'];
+			        console.log(Player);
+			        console.log(connectionCode);
+			        setUpPeerToPeer();
+			    }
+			}
+
+			XHR.open("GET", url+"?"+urlEncodedData, true);
+			XHR.onreadystatechange = handleRequestStateChange;
+			XHR.send(null);
+		}
+
+		sendData(info);
+
+		var peer;
+
+		function setUpPeerToPeer(){
+			peer = new Peer(connectionCode, {host: 'localhost', port: 9000});
+
+			if(Player == 1){
+
+				peer.on('connection', function(conn){
+				conn.on('data', function(data) {
+				    console.log('Got data:', data);
+				  });
+				});
+			}else{
+				var conn = peer.connect(connectionCode);
+				conn.on('open', function() {
+				  conn.send('Hello world!');
+				});
+			}
+		}
+
 	</script>
 </body>
 </html>
