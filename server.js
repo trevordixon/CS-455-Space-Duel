@@ -8,8 +8,9 @@ app.get('/js/main.js', browserify('./public/js/main.js', {
 	detectGlobals: false
 }));
 
-app.get('/js/bundle.js', browserify(['three', 'underscore'], {
-	noParse: ['three', 'underscore'],
+var bundleModules = ['three', 'underscore', 'events'];
+app.get('/js/bundle.js', browserify(bundleModules, {
+	noParse: bundleModules,
 	cache: true,
 	debug: false
 }));

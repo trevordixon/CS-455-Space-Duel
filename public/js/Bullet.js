@@ -31,6 +31,12 @@ _.extend(Bullet.prototype, GravityObject.prototype, {
 		GravityObject.prototype.tick.apply(this, arguments);
 
 		if (this.distanceToSun() < 50) this.remove();
+	},
+
+	checkCollision: function(objs) {
+		for (var i = 0; i < objs.length; i++) {
+			//if ()
+		}
 	}
 });
 

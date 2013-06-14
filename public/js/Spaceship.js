@@ -4,6 +4,8 @@ var THREE = require('three'),
 	gpManager = require('./gamepadManager.js'),
 	GravityObject = require('./GravityObject.js');
 
+require('./FlyControls.js');
+
 geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 
 function Spaceship() {
@@ -13,7 +15,7 @@ function Spaceship() {
 var sunPosition = new THREE.Vector3(0, 0, 0);
 
 _.extend(Spaceship.prototype, GravityObject.prototype, {
-	mass: 0.3,
+	mass: 0.05,
 	yaw: 0,
 	pitch: 0,
 
@@ -22,7 +24,6 @@ _.extend(Spaceship.prototype, GravityObject.prototype, {
 		this.velocity = new THREE.Vector3(5, -5, 0);
 
 		this.mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: color }));
-		this.mesh.eulerOrder = 'YXZ';
 
 		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 		this.camera.position.set(0, 0, -800);
@@ -40,6 +41,12 @@ _.extend(Spaceship.prototype, GravityObject.prototype, {
 
 		this.mesh.scale.set(.4, .4, .4);
 		this.mesh.position.set(500, 500, 0);
+
+		this.controls = new THREE.FlyControls(this.mesh);
+		this.controls.movementSpeed = 1000;
+		this.controls.rollSpeed = Math.PI / 24;
+		this.controls.autoForward = false;
+		this.controls.dragToLook = false;
 	},
 
 	getDirection: function() {
@@ -47,8 +54,6 @@ _.extend(Spaceship.prototype, GravityObject.prototype, {
 	},
 
 	tick: function(time) {
-		GravityObject.prototype.tick.apply(this, arguments);
-
 		if (gpManager.gamepad) {
 			var axes = gpManager.gamepad.axes;
 
@@ -61,7 +66,8 @@ _.extend(Spaceship.prototype, GravityObject.prototype, {
 			this.velocity.add(dir.multiplyScalar(gpManager.gamepad.buttons[6] * .15));
 		}
 
-		this.mesh.position.add(this.velocity);
+		this.controls.update(0.2);
+		GravityObject.prototype.tick.apply(this, arguments);
 	}
 });
 

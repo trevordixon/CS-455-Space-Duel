@@ -1,5 +1,6 @@
 var THREE = require('three'),
-	_ = require('underscore');
+	_ = require('underscore')
+	EventEmitter = require('events').EventEmitter;
 
 var sunPosition = new THREE.Vector3(0, 0, 0);
 
@@ -7,7 +8,7 @@ function GravityObject() {
 	this._initialize.apply(this, arguments);
 }
 
-_.extend(GravityObject.prototype, {
+_.extend(GravityObject.prototype, EventEmitter.prototype, {
 	_initialize: function() {
 		this.createTime = Date.now();
 	},
@@ -33,7 +34,7 @@ _.extend(GravityObject.prototype, {
 
 	remove: function() {
 		this.scene.remove(this.mesh);
-		this._remove = true;
+		this.emit('remove');
 	},
 
 	distanceToSun: function() {
