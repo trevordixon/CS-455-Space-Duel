@@ -1,43 +1,45 @@
 var THREE = require('three'),
-	geometry = require('./models/jetGeometry.js').geometry;
+	_ = require('underscore'),
+	geometry = require('./models/jetGeometry.js').geometry,
+	gpManager = require('./gamepadManager.js'),
+	GravityObject = require('./GravityObject.js');
 
 geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 
-function Spaceship(color, gamepad, scene) {
-	this.color = color;
-	this.gamepad = gamepad;
-	this.velocity = new THREE.Vector3(5, -5, 0);
-
-	this.mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: color }));
-	this.mesh.eulerOrder = 'YXZ';
-
-	this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-	this.camera.position.set(0, 0, -800);
-	this.camera.rotation.set(0, Math.PI, 0);
-	this.mesh.add(this.camera);
-
-	scene.add(this.mesh);
-
-	this.arrowHelper = new THREE.ArrowHelper(
-		this.getDirection(),
-		this.mesh.position,
-		100,
-		0xFFFFFF
-	);
-
-	this.mesh.scale.set(.4, .4, .4);
-	this.mesh.position.set(500, 500, 0);
+function Spaceship() {
+	this._initialize.apply(this, arguments);
 }
 
 var sunPosition = new THREE.Vector3(0, 0, 0);
 
-Spaceship.prototype = {
+_.extend(Spaceship.prototype, GravityObject.prototype, {
+	mass: 0.3,
 	yaw: 0,
 	pitch: 0,
 
-	setGamepad: function(gamepad) {
-		this.gamepad = gamepad;
-		return this;
+	_initialize: function(color, scene) {
+		this.color = color;
+		this.velocity = new THREE.Vector3(5, -5, 0);
+
+		this.mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: color }));
+		this.mesh.eulerOrder = 'YXZ';
+
+		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+		this.camera.position.set(0, 0, -800);
+		this.camera.rotation.set(0, Math.PI, 0);
+		this.mesh.add(this.camera);
+
+		scene.add(this.mesh);
+
+		this.arrowHelper = new THREE.ArrowHelper(
+			this.getDirection(),
+			this.mesh.position,
+			100,
+			0xFFFFFF
+		);
+
+		this.mesh.scale.set(.4, .4, .4);
+		this.mesh.position.set(500, 500, 0);
 	},
 
 	getDirection: function() {
@@ -45,12 +47,10 @@ Spaceship.prototype = {
 	},
 
 	tick: function(time) {
-		var r = this.mesh.position.distanceTo(sunPosition);
-		var a = new THREE.Vector3().subVectors(sunPosition, this.mesh.position).normalize().multiplyScalar(.3 / r*r);
-		this.velocity.add(a);
+		GravityObject.prototype.tick.apply(this, arguments);
 
-		if (this.gamepad) {
-			var axes = this.gamepad.axes;
+		if (gpManager.gamepad) {
+			var axes = gpManager.gamepad.axes;
 
 			this.yaw -= axes[3]/10;
 			this.pitch -= axes[2]/10;
@@ -58,11 +58,11 @@ Spaceship.prototype = {
 			this.mesh.rotation.set(this.yaw, this.pitch, 0);
 
 			var dir = this.getDirection();
-			this.velocity.add(dir.multiplyScalar(this.gamepad.buttons[6] * .15));
+			this.velocity.add(dir.multiplyScalar(gpManager.gamepad.buttons[6] * .15));
 		}
 
 		this.mesh.position.add(this.velocity);
 	}
-};
+});
 
 module.exports = Spaceship;

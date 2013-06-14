@@ -1,35 +1,37 @@
-var THREE = require('three');
+var THREE = require('three'),
+	_ = require('underscore'),
+	GravityObject = require('./GravityObject.js');
 
-function Bullet(spaceship, scene){
-	this.spaceship = spaceship;
-	this.scene = scene;
-
-	this.mesh = new THREE.Mesh(new THREE.SphereGeometry(5, 5, 5), new THREE.MeshLambertMaterial({
-		color: 0x0000FF
-	}));
-
-	this.mesh.overdraw = true;
-	this.scene.add(this.mesh);
-
-	var dir = spaceship.getDirection();
-	this.velocity = spaceship.velocity.clone().add(dir.multiplyScalar(10));
-	this.mesh.position = spaceship.mesh.position.clone().add(dir.multiplyScalar(10));
+function Bullet(spaceship, scene) {
+	GravityObject.prototype._initialize.apply(this, arguments);
+	this._initialize.apply(this, arguments);
 }
 
-var sunPosition = new THREE.Vector3(0, 0, 0);
+_.extend(Bullet.prototype, GravityObject.prototype, {
+	ttl: 20000,
+	mass: 0.2,
 
-Bullet.prototype = {
+	_initialize: function(spaceship, scene) {
+		this.spaceship = spaceship;
+		this.scene = scene;
+
+		this.mesh = new THREE.Mesh(new THREE.SphereGeometry(5, 5, 5), new THREE.MeshLambertMaterial({
+			color: 0x0000FF
+		}));
+
+		this.mesh.overdraw = true;
+		this.scene.add(this.mesh);
+
+		var dir = spaceship.getDirection();
+		this.velocity = spaceship.velocity.clone().add(dir.multiplyScalar(10));
+		this.mesh.position = spaceship.mesh.position.clone().add(dir.multiplyScalar(10));
+	},
+
 	tick: function(time) {
-		var r = this.mesh.position.distanceTo(sunPosition);
-		var a = new THREE.Vector3().subVectors(sunPosition, this.mesh.position).normalize().multiplyScalar(.2 / r*r);
-		this.velocity.add(a);
-		this.mesh.position.add(this.velocity);
+		GravityObject.prototype.tick.apply(this, arguments);
 
-		if (r < 50) {
-			// TODO: also need to remove bullet from array in main.js
-			this.scene.remove(this.mesh);
-		}
+		if (this.distanceToSun() < 50) this.remove();
 	}
-}
+});
 
 module.exports = Bullet; 

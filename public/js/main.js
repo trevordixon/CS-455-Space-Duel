@@ -1,8 +1,7 @@
 var THREE = require('three'),
 	Spaceship = require('./Spaceship.js'),
-	Bullet = require('./Bullet.js');
-
-var gamepad = navigator.webkitGetGamepads()[0];
+	Bullet = require('./Bullet.js'),
+	gpManager = require('./gamepadManager.js');
 
 var scene = new THREE.Scene();
 
@@ -17,7 +16,7 @@ require('./addLight.js')(scene);
 var camera,
 	mainCamera = camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 
-var p1 = new Spaceship(0x555555, gamepad, scene);
+var p1 = new Spaceship(0x555555, scene);
 
 var sun = new THREE.Mesh(new THREE.SphereGeometry(50, 50, 16), new THREE.MeshLambertMaterial({
 	color: 'yellow' 
@@ -42,17 +41,14 @@ function animate(){
 
 	lastTime = time;
 
-	gravityObjects.forEach(function(obj) {
+	gravityObjects.forEach(function(obj, i) {
+		if (obj._remove) return gravityObjects.splice(i, 1);
 		obj.tick(time);
 	});
 
-	require('./checkForGamepad.js')(function(_gamepad) {
-		gamepad = _gamepad;
-		p1.setGamepad(_gamepad);
-	});
-
-	if (gamepad) {
-		var axes = gamepad.axes,
+	if (gpManager.gamepad) {
+		var gamepad = gpManager.gamepad,
+			axes = gamepad.axes,
 			buttons = gamepad.buttons;
 
 		if (buttons[4]) {
