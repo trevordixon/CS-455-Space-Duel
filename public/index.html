@@ -12,31 +12,29 @@
 	<script src="js/lib/qwest-0.3.2.min.js"></script>
 	<script>
 		var Player, connectionCode;
-
-		qwest.get('/getPeerCode', {code: 112233})
-			.success(function(response) {
-				console.log(response);
-				Player = response.player;
-				connectionCode = response.code;
-				console.log(Player);
-				console.log(connectionCode);
-				setUpPeerToPeer();
-			});
-
 		var peer;
 
-		function setUpPeerToPeer(){
+		qwest.get('/getPeerCode', {code: 112233}, {type: 'text'})
+            .success(function(response) {
+                response = JSON.parse(response);
+				Player = response.player;
+				connectionCode = response.code;
+				setUpPeerToPeer(Player, connectionCode);
+			});
+
+		function setUpPeerToPeer(Player, connectionCode){
 			peer = new Peer(connectionCode, {host: 'localhost', port: 9000});
-
+			console.log(Player);
 			if(Player == 1){
-
-				peer.on('connection', function(conn){
-				conn.on('data', function(data) {
-				    console.log('Got data:', data);
-				  });
+				peer.on('connection', function(conn) {
+					conn.on('data', function(data){
+						console.log(data);
+					});
 				});
 			}else{
-				var conn = peer.connect(connectionCode);
+				console.log("******")
+				var conn = peer.connect(connectionCode, {reliable: true});
+				console.log(conn + "-----");
 				conn.on('open', function() {
 				  conn.send('Hello world!');
 				});

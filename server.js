@@ -18,9 +18,18 @@ app.get('/js/bundle.js', browserify(bundleModules, {
 
 app.get('/getPeerCode', function(req, res){
 
-	var code = req["_parsedUrl"]["query"].split('=')[1];
-	console.log(code);
-	var resp = JSON.stringify(peerCode(code));
+	var code = req["_parsedUrl"]["query"].split('&');
+	// console.log(code)
+	var params = {}
+	for (key in code){
+		var param = code[key].split('=');
+		// console.log(param);
+		params[param[0]] = param[1];
+	}
+	//console.log(req["_parsedUrl"]["query"]);
+	var pc = peerCode(params);
+	//console.log(pc);
+	var resp = JSON.stringify(pc);
 	//console.log(resp);
 	res.write(resp);
 	res.end();
@@ -33,11 +42,12 @@ console.log('Listening on port 8030');
 
 var PeerServer = require('peer').PeerServer;
 var pserver = new PeerServer({ port: 9000 });
-
+console.log(pserver);
 
 var playerOne = true;
 
 function peerCode(code){
+	// console.log(code);
 	var response = {};
 	if (playerOne){
 		response["player"] = 1;
@@ -46,6 +56,9 @@ function peerCode(code){
 		response["player"] = 2;
 		playerOne = true;
 	}
-	response["code"] = code;
+	for(k in code){
+		response[k] = code[k];
+	}
+	// console.log(response);
 	return response;
 }
