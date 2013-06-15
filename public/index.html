@@ -9,42 +9,19 @@
 	<script src="http://cdn.peerjs.com/0/peer.min.js"></script>
 	<script src="js/bundle.js"></script>
 	<script src="js/main.js"></script>
+	<script src="js/lib/qwest-0.3.2.min.js"></script>
 	<script>
-		var Player;
-		var connectionCode;
-		var info = {'code':112233};
+		var Player, connectionCode;
 
-		function sendData(data) {
-			var XHR = new XMLHttpRequest();
-			var urlEncodedData = "";
-			for(name in data) {
-				urlEncodedData += name + "=" + data[name] + "&";
-			}
-			urlEncodedData = urlEncodedData.slice(0, -1);
-			urlEncodedData = encodeURIComponent(urlEncodedData);
-			urlEncodedData = urlEncodedData.replace('%20','+').replace('%3D','=');
-			var handleRequestStateChange;
-			var url = "getPeerCode";
-
-			handleRequestStateChange = function()
-			{
-			    if (XHR.readyState==4 && XHR.status==200) 
-			    {
-			        var substring=JSON.parse(XHR.responseText);
-			        Player = substring['player'];
-			        connectionCode = substring['code'];
-			        console.log(Player);
-			        console.log(connectionCode);
-			        setUpPeerToPeer();
-			    }
-			}
-
-			XHR.open("GET", url+"?"+urlEncodedData, true);
-			XHR.onreadystatechange = handleRequestStateChange;
-			XHR.send(null);
-		}
-
-		sendData(info);
+		qwest.get('/getPeerCode', {code: 112233})
+			.success(function(response) {
+				console.log(response);
+				Player = response.player;
+				connectionCode = response.code;
+				console.log(Player);
+				console.log(connectionCode);
+				setUpPeerToPeer();
+			});
 
 		var peer;
 
