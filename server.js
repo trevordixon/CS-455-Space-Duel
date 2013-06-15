@@ -1,7 +1,10 @@
-var express = require('express'),
-	browserify = require('browserify-middleware');
+var _ = require('underscore'),
+	express = require('express'),
+	browserify = require('browserify-middleware'),
+	pserver = new require('peer').PeerServer({port: 9000});
 
 var app = express();
+app.engine('html', require('ejs').renderFile);
 
 require('./src/pserver')(app);
 
@@ -17,6 +20,25 @@ app.get('/js/bundle.js', browserify(bundleModules, {
 	cache: true,
 	debug: false
 }));
+
+app.get('/', function(req, res) {
+	var id = Math.random().toString(36).substring(10),
+		partner;
+
+	var clients = pserver._clients.peerjs;
+	for (var _id in clients) {
+		if (clients[_id].partner === undefined) {
+			clients[_id].partner = id;
+			partner = _id;
+			break;
+		}
+	}
+
+	res.render(__dirname + '/public/index.html', {
+		id: id,
+		partner: partner
+	});
+});
 
 app.use(express.static(__dirname + '/public'));
 

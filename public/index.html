@@ -9,36 +9,25 @@
 	<script src="http://cdn.peerjs.com/0/peer.min.js"></script>
 	<script src="js/bundle.js"></script>
 	<script src="js/main.js"></script>
-	<script src="js/lib/qwest-0.3.2.min.js"></script>
 	<script>
-		var Player, connectionCode;
-		var peer;
+		var conn;
+		
+		var id = '<%= id %>',
+			partner = '<%= partner %>';
 
-		qwest.get('/getPeerCode', {code: 112233}, {type: 'text'})
-            .success(function(response) {
-                response = JSON.parse(response);
-				Player = response.player;
-				connectionCode = response.code;
-				setUpPeerToPeer(Player, connectionCode);
+		var peer = new Peer(id, {host: 'localhost', port: 9000});
+		
+		peer.on('connection', function(conn) {
+			conn.on('data', function(data){
+				console.log(data);
 			});
+		});
 
-		function setUpPeerToPeer(Player, connectionCode){
-			peer = new Peer(connectionCode, {host: 'localhost', port: 9000});
-			console.log(Player);
-			if(Player == 1){
-				peer.on('connection', function(conn) {
-					conn.on('data', function(data){
-						console.log(data);
-					});
-				});
-			}else{
-				console.log("******")
-				var conn = peer.connect(connectionCode, {reliable: true});
-				console.log(conn + "-----");
-				conn.on('open', function() {
-				  conn.send('Hello world!');
-				});
-			}
+		if (partner) {
+			conn = peer.connect(partner);
+			conn.on('open', function() {
+				conn.send('Howdy partner.');
+			});
 		}
 
 	</script>
