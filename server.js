@@ -6,11 +6,9 @@ var _ = require('underscore'),
 var app = express();
 app.engine('html', require('ejs').renderFile);
 
-require('./src/pserver')(app);
-
 var bundleModules = ['three', 'underscore', 'events'];
 
-app.get('/js/main.js', browserify('./public/js/main.js', {
+app.get('/js/main.js', browserify('./src/main.js', {
 	external: bundleModules,
 	detectGlobals: false
 }));
@@ -26,6 +24,7 @@ app.get('/', function(req, res) {
 		partner;
 
 	var clients = pserver._clients.peerjs;
+
 	for (var _id in clients) {
 		if (clients[_id].partner === undefined) {
 			clients[_id].partner = id;
@@ -34,7 +33,7 @@ app.get('/', function(req, res) {
 		}
 	}
 
-	res.render(__dirname + '/public/index.html', {
+	res.render(__dirname + '/views/index.html', {
 		id: id,
 		partner: partner
 	});
