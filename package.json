@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "express": "~3.2.6",
+    "underscore": "~1.4.4",
+    "three": "~0.58.9",
+    "url": "~0.7.9",
+    "peer": "~0.1.6",
+    "browserify-middleware": "~1.12.0"
+  }
+}
