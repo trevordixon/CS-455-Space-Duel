@@ -1,4 +1,6 @@
-var conn,
+var id = monster.get('id'),
+	partner = monster.get('partner'),
+	conn,
 	peer = new Peer(window.id, {host: 'localhost', port: 9000});
 
 peer.on('connection', function(conn) {
@@ -7,8 +9,8 @@ peer.on('connection', function(conn) {
 	});
 });
 
-if (window.partner) {
-	conn = peer.connect(window.partner);
+if (partner) {
+	conn = peer.connect(partner);
 	conn.on('open', function() {
 		conn.send('Howdy partner.');
 	});

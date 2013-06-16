@@ -19,7 +19,7 @@ app.get('/js/bundle.js', browserify(bundleModules, {
 	debug: false
 }));
 
-app.get('/', function(req, res) {
+app.get('/', function(req, res, next) {
 	var id = Math.random().toString(36).substring(10),
 		partner;
 
@@ -33,10 +33,10 @@ app.get('/', function(req, res) {
 		}
 	}
 
-	res.render(__dirname + '/views/index.html', {
-		id: id,
-		partner: partner
-	});
+	res.cookie('id', id);
+	res.cookie('partner', partner);
+
+	next();
 });
 
 app.use(express.static(__dirname + '/public'));
