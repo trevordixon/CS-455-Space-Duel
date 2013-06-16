@@ -1,3 +1,5 @@
+var monster = require('./lib/cookie-monster');
+
 var id = monster.get('id'),
 	partner = monster.get('partner'),
 	conn,

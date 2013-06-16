@@ -60,3 +60,5 @@ var monster = {
     this.set(name, (parseInt(value, 10) - 1), days);
   }
 };
+
+module.exports = monster;
