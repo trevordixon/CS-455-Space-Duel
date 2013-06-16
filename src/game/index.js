@@ -1,3 +1,5 @@
+var spaceship, partner;
+
 module.exports = {
 	play: function() {
 		var THREE = require('three'),
@@ -18,7 +20,8 @@ module.exports = {
 		var camera,
 			mainCamera = camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 
-		var p1 = new Spaceship(0x555555, scene);
+		spaceship = new Spaceship(0x555555, scene);
+		partner = new Spaceship(0xFF1111, scene);
 
 		var sun = new THREE.Mesh(new THREE.SphereGeometry(50, 50, 16), new THREE.MeshLambertMaterial({
 			color: 'yellow' 
@@ -31,7 +34,7 @@ module.exports = {
 
 		var cameraXAngle = 0, cameraYAngle = Math.PI/2, cameraDistance = 1200;
 
-		var gravityObjects = [p1];
+		var gravityObjects = [spaceship];
 
 		var lastTime = 0;
 		var prevButton11 = 0,
@@ -65,18 +68,18 @@ module.exports = {
 
 				if (buttons[11] && buttons[11] != prevButton11) {
 					if (camera == mainCamera) {
-						camera = p1.camera;
-						p1.watchForJoystickRoll();
+						camera = spaceship.camera;
+						spaceship.watchForJoystickRoll();
 					} else {
 						camera = mainCamera;
-						p1.dontWatchForJoystickRoll();
+						spaceship.dontWatchForJoystickRoll();
 					}
 				}
 
 				prevButton11 = buttons[11];
 
 				if (buttons[7] > 0.3 && prevButton7 == false) {
-					var bullet = new Bullet(p1, scene);
+					var bullet = new Bullet(spaceship, scene);
 					gravityObjects.push(bullet);
 				}
 
@@ -96,5 +99,37 @@ module.exports = {
 		}
 
 		animate();
+	},
+
+	getState: function() {
+		var p = spaceship.mesh.position,
+			v = spaceship.velocity,
+			r = spaceship.mesh.rotation;
+
+		return {
+			position: {x: p.x, y: p.y, z: p.z},
+			velocity: {x: v.x, y: v.y, z: v.z},
+			rotation: {x: r.x, y: r.y, z: r.z}
+		}
+	},
+
+	updatePartnerState: function(state) {
+		with (state) {
+			partner.mesh.position.set(
+				position.x,
+				position.y,
+				position.z
+			);
+
+			partner.mesh.rotation.set(
+				rotation.x,
+				rotation.y,
+				rotation.z
+			);
+
+			partner.velocity.x = velocity.x;
+			partner.velocity.y = velocity.y;
+			partner.velocity.z = velocity.z;
+		}
 	}
 }
