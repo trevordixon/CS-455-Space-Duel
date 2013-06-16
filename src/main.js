@@ -1,19 +1,23 @@
 var id = monster.get('id'),
 	partner = monster.get('partner'),
 	conn,
-	peer = new Peer(window.id, {host: 'localhost', port: 9000});
+	peer = new Peer(window.id, {host: 'localhost', port: 9000}),
+	game = require('./game');
 
 peer.on('connection', function(conn) {
-	conn.on('data', function(data){
-		console.log(data);
-	});
+	startGame();
 });
 
 if (partner) {
 	conn = peer.connect(partner);
 	conn.on('open', function() {
-		conn.send('Howdy partner.');
+		startGame();
 	});
 }
 
-require('./game');
+function startGame() {
+	$(document.body)
+		.removeClass('disconnected')
+		.addClass('connected');
+	game.play();
+}

@@ -2,4 +2,15 @@ body {
 	margin: 0px;
 	padding: 0px;
 	background-color: #000;
+	color: #fff;
+	font-family: sans-serif;
+}
+
+.waiting-message {
+	font-size: 24px;
+	text-align: center;
+}
+
+.connected .waiting-message {
+	display: none;
 }
