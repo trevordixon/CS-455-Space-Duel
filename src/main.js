@@ -3,23 +3,26 @@ var cookie = require('./lib/cookie-monster');
 var id = cookie.get('id'),
 	partner = cookie.get('partner'),
 	conn,
-	peer = new Peer(window.id, {host: 'localhost', port: 9000}),
+	peer = new Peer(id, {host: 'localhost', port: 9000}),
 	game = require('./game');
 
+// Somebody else connected to me
 peer.on('connection', function(_conn) {
 	startGame();
 	conn = _conn;
-	conn.on('data', game.updatePartnerState);
+	conn.on('data', handlePeerData);
 });
 
+// Connect to somebody else
 if (partner) {
 	conn = peer.connect(partner);
 
 	conn.on('open', function() {
 		startGame();
+		conn.send(game.getState());
 	});
 
-	conn.on('data', game.updatePartnerState);
+	conn.on('data', handlePeerData);
 }
 
 function startGame() {
@@ -27,9 +30,10 @@ function startGame() {
 		.removeClass('disconnected')
 		.addClass('connected');
 
-	setInterval(function() {
-		if (conn) conn.send(game.getState());
-	}, 10);
-
 	game.play();
+}
+
+function handlePeerData(data) {
+	game.updatePartnerState(data);
+	conn.send(game.getState());
 }

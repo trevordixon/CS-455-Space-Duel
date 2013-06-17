@@ -6,7 +6,9 @@ module.exports = {
 setInterval(function() {
 	require('./checkForGamepad.js')(function(_gamepad) {
 		gamepad = _gamepad;
-		module.exports.gamepad = _gamepad;
+		setTimeout(function() {
+			module.exports.gamepad = _gamepad;
+		}, 100);
 	});
 }, 50);
 

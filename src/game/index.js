@@ -1,3 +1,5 @@
+var THREE = require('three');
+
 var spaceship, partner;
 
 module.exports = {
@@ -104,32 +106,25 @@ module.exports = {
 	getState: function() {
 		var p = spaceship.mesh.position,
 			v = spaceship.velocity,
-			r = spaceship.mesh.rotation;
+			q = spaceship.mesh.quaternion,
+			eulerOrder = spaceship.mesh.eulerOrder;
 
 		return {
 			position: {x: p.x, y: p.y, z: p.z},
 			velocity: {x: v.x, y: v.y, z: v.z},
-			rotation: {x: r.x, y: r.y, z: r.z}
+			quaternion: {x: q.x, y: q.y, z: q.z, w: q.w},
+			eulerOrder: eulerOrder
 		}
 	},
 
 	updatePartnerState: function(state) {
 		with (state) {
-			partner.mesh.position.set(
-				position.x,
-				position.y,
-				position.z
+			partner.mesh.position.set(position.x, position.y, position.z);
+			partner.mesh.rotation.setEulerFromQuaternion(
+				new THREE.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w),
+				eulerOrder
 			);
-
-			partner.mesh.rotation.set(
-				rotation.x,
-				rotation.y,
-				rotation.z
-			);
-
-			partner.velocity.x = velocity.x;
-			partner.velocity.y = velocity.y;
-			partner.velocity.z = velocity.z;
+			partner.velocity.set(velocity.x, velocity.y, velocity.z);
 		}
 	}
 }
