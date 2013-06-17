@@ -1,17 +1,15 @@
 var THREE = require('three'),
 	EventEmitter = require('events').EventEmitter;
+	Spaceship = require('./Spaceship.js'),
+	Bullet = require('./Bullet.js'),
+	gamepad = require('./gamepad.js');
 
-var spaceship, partner;
+var spaceship, partner, scene, gravityObjects;
 
 var game = new EventEmitter();
 
 game.play = function() {
-	var THREE = require('three'),
-		Spaceship = require('./Spaceship.js'),
-		Bullet = require('./Bullet.js'),
-		gamepad = require('./gamepad.js');
-
-	var scene = new THREE.Scene();
+	scene = new THREE.Scene();
 
 	// renderer
 	var renderer = new THREE.WebGLRenderer();
@@ -38,7 +36,7 @@ game.play = function() {
 
 	var cameraXAngle = 0, cameraYAngle = Math.PI/2, cameraDistance = 1200;
 
-	var gravityObjects = [spaceship];
+	gravityObjects = [spaceship];
 
 	var lastTime = 0;
 	var prevButton11 = 0,
@@ -53,9 +51,12 @@ game.play = function() {
 		gravityObjects.forEach(function(obj, i) {
 			if (obj._remove) return gravityObjects.splice(i, 1);
 			obj.tick(time);
-			if (obj.checkCollision) {
+			if (obj.checkCollision && obj.spaceship === spaceship) {
 				var collision = obj.checkCollision([spaceship, partner]);
-				if (collision) game.emit('hit', collision === spaceship ? 'you' : 'them');
+				if (collision) {
+					obj.remove();
+					game.emit('hit', collision === spaceship ? 'you' : 'them');
+				}
 			}
 		});
 
@@ -90,6 +91,7 @@ game.play = function() {
 			if (buttons[7] > 0.3 && prevButton7 == false) {
 				var bullet = new Bullet(spaceship, scene);
 				gravityObjects.push(bullet);
+				game.emit('bullet', bullet);
 			}
 
 			prevButton7 = buttons[7] > 0.3;
@@ -128,6 +130,15 @@ game.updatePartnerState = function(state) {
 		partner.mesh.position.set(position.x, position.y, position.z);
 		partner.mesh.rotation.set(rotation.x, rotation.y, rotation.z);
 		partner.velocity.set(velocity.x, velocity.y, velocity.z);
+	}
+};
+
+game.enemyBullet = function(data) {
+	with (data) {
+		var bullet = new Bullet(partner, scene);
+		bullet.mesh.position.set(position.x, position.y, position.z);
+		bullet.velocity.set(velocity.x, velocity.y, velocity.z);
+		gravityObjects.push(bullet);
 	}
 };
 

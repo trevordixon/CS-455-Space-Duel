@@ -48,6 +48,9 @@ function handlePeerData(data) {
 		case 'hit':
 			incScore(otherPerson(data.who));
 			break;
+		case 'bullet':
+			game.enemyBullet(data);
+			break;
 	}
 }
 
@@ -61,5 +64,16 @@ game.on('hit', function(who) {
 	conn.send({
 		event: 'hit',
 		who: otherPerson(who)
+	});
+});
+
+game.on('bullet', function(bullet) {
+	var p = bullet.mesh.position,
+		v = bullet.velocity;
+	
+	conn.send({
+		event: 'bullet',
+		position: {x: p.x, y: p.y, z: p.z},
+		velocity: {x: v.x, y: v.y, z: v.z}
 	});
 });
