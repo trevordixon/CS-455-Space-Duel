@@ -5,7 +5,6 @@ var id = cookie.get('id'),
 	partner = cookie.get('partner'),
 	conn,
 	peer = new Peer(id, {host: document.location.hostname, port: 9000}),
-
 	game = require('./game');
 
 // Somebody else connected to me
@@ -39,6 +38,28 @@ function startGame() {
 	}, 16);
 }
 
+function otherPerson(who) { return (who === 'you') ? 'them' : 'you'; }
+
 function handlePeerData(data) {
-	game.updatePartnerState(data);
+	switch(data.event) {
+		case 'state':
+			game.updatePartnerState(data);
+			break;
+		case 'hit':
+			incScore(otherPerson(data.who));
+			break;
+	}
 }
+
+function incScore(who) {
+	var $el = (who === 'you') ? $('.my-score') : $('.their-score');
+	$el.text(1*$el.text()+1);
+}
+
+game.on('hit', function(who) {
+	incScore(otherPerson(who));
+	conn.send({
+		event: 'hit',
+		who: otherPerson(who)
+	});
+});

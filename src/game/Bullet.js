@@ -36,7 +36,7 @@ _.extend(Bullet.prototype, GravityObject.prototype, {
 	checkCollision: function(objs) {
 		for (var i = 0; i < objs.length; i++) {
 			var dist = this.mesh.position.distanceTo(objs[i].mesh.position);
-			if (dist < 10) {
+			if (dist < 20) {
 				return objs[i];
 			}
 		}
