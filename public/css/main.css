@@ -15,28 +15,28 @@ body {
 	display: none;
 }
 
-.myScore, .theirScore {
+.my-score, .their-score {
 	position: absolute;
 	top: 10px;
 }
 
-.myScore{
+.my-score{
 	left: 10px;
 }
 
-.theirScore{
+.their-score{
 	left: 130px;
 }
 
-.myScore:before {
+.my-score:before {
 	content: "Your Score: ";
 }
 
-.theirScore:before{
+.their-score:before{
 	content: "Their Score: ";
 }
 
-.disconnected .myscore,
-.disconnected .theirScore{
+.disconnected .my-score,
+.disconnected .their-score{
 	display: none;
 }

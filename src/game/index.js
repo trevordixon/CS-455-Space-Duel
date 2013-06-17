@@ -56,11 +56,11 @@ module.exports = {
 				obj.tick(time);
 				if (obj.checkCollision){
 					var collision = obj.checkCollision([spaceship, partner]);
-					if (collision == spaceship){
-						var $theirScore = $(".theirScore");
+					if (collision == spaceship) {
+						var $theirScore = $(".their-score");
 						$theirScore.text(1*$theirScore.text()+1);
-					}else if(collision == partner){
-						var $myScore = $(".myScore");
+					} else if (collision == partner) {
+						var $myScore = $(".my-score");
 						$myScore.text(1*$myScore.text()+1);
 					}
 				}
