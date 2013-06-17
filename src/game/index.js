@@ -23,7 +23,7 @@ module.exports = {
 			mainCamera = camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 
 		spaceship = new Spaceship(0x555555, scene);
-		partner = new Spaceship(0xFF1111, scene);
+		partner = new Spaceship(0xFF1111, scene, true);
 
 		var sun = new THREE.Mesh(new THREE.SphereGeometry(50, 50, 16), new THREE.MeshLambertMaterial({
 			color: 'yellow' 
@@ -106,24 +106,19 @@ module.exports = {
 	getState: function() {
 		var p = spaceship.mesh.position,
 			v = spaceship.velocity,
-			q = spaceship.mesh.quaternion,
-			eulerOrder = spaceship.mesh.eulerOrder;
+			r = spaceship.mesh.quaternion;
 
 		return {
 			position: {x: p.x, y: p.y, z: p.z},
 			velocity: {x: v.x, y: v.y, z: v.z},
-			quaternion: {x: q.x, y: q.y, z: q.z, w: q.w},
-			eulerOrder: eulerOrder
+			rotation: {x: r.x, y: r.y, z: r.z},
 		}
 	},
 
 	updatePartnerState: function(state) {
 		with (state) {
 			partner.mesh.position.set(position.x, position.y, position.z);
-			partner.mesh.rotation.setEulerFromQuaternion(
-				new THREE.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w),
-				eulerOrder
-			);
+			partner.mesh.rotation.set(rotation.x, rotation.y, rotation.z);
 			partner.velocity.set(velocity.x, velocity.y, velocity.z);
 		}
 	}

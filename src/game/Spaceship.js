@@ -19,7 +19,7 @@ _.extend(Spaceship.prototype, GravityObject.prototype, {
 	yaw: 0,
 	pitch: 0,
 
-	_initialize: function(color, scene) {
+	_initialize: function(color, scene, nocontrol) {
 		this.color = color;
 		this.velocity = new THREE.Vector3(5, -5, 0);
 
@@ -42,6 +42,7 @@ _.extend(Spaceship.prototype, GravityObject.prototype, {
 		this.mesh.scale.set(.4, .4, .4);
 		this.mesh.position.set(500, 500, 0);
 
+		if (nocontrol) return;
 		this.controls = new THREE.FlyControls(this.mesh);
 		this.controls.movementSpeed = 1000;
 		this.controls.rollSpeed = Math.PI / 24;
