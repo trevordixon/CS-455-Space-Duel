@@ -28,7 +28,6 @@ _.extend(GravityObject.prototype, EventEmitter.prototype, {
 		
 		this.velocity.add(a);
 		this.mesh.position.add(this.velocity);
-
 		return true;
 	},
 

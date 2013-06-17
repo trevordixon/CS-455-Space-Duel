@@ -35,8 +35,12 @@ _.extend(Bullet.prototype, GravityObject.prototype, {
 
 	checkCollision: function(objs) {
 		for (var i = 0; i < objs.length; i++) {
-			//if ()
+			var dist = this.mesh.position.distanceTo(objs[i].mesh.position);
+			if (dist < 10){
+				return objs[i];
+			}
 		}
+		return false;
 	}
 });
 

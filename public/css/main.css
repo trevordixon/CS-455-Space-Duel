@@ -14,3 +14,22 @@ body {
 .connected .waiting-message {
 	display: none;
 }
+.myScore{
+	position: absolute;
+}
+.connected .theirScore{
+	position: absolute;
+	left:120px;
+}
+.connected .myScore:before {
+	content:"Your Score: ";
+}
+
+.connected .theirScore:before{
+	content: "Their Score: ";
+}
+
+.disconnected .myscore,
+.disconnected .theirScore{
+	display: none;
+}

@@ -2,6 +2,8 @@ var THREE = require('three');
 
 var spaceship, partner;
 
+var myScore = theirScore = 0;
+
 module.exports = {
 	play: function() {
 		var THREE = require('three'),
@@ -25,7 +27,7 @@ module.exports = {
 		spaceship = new Spaceship(0x555555, scene);
 		partner = new Spaceship(0xFF1111, scene, true);
 
-		var sun = new THREE.Mesh(new THREE.SphereGeometry(50, 50, 16), new THREE.MeshLambertMaterial({
+		var sun = new THREE.Mesh(new THREE.SphereGeometry(80, 80, 16), new THREE.MeshLambertMaterial({
 			color: 'yellow' 
 		}));
 		sun.overdraw = true;
@@ -41,6 +43,7 @@ module.exports = {
 		var lastTime = 0;
 		var prevButton11 = 0,
 			prevButton7 = false;
+			
 		function animate(){
 			// update
 			var time = (new Date()).getTime();
@@ -51,6 +54,16 @@ module.exports = {
 			gravityObjects.forEach(function(obj, i) {
 				if (obj._remove) return gravityObjects.splice(i, 1);
 				obj.tick(time);
+				if (obj.checkCollision){
+					var collision = obj.checkCollision([spaceship, partner]);
+					if (collision == spaceship){
+						var $theirScore = $(".theirScore");
+						$theirScore.text(1*$theirScore.text()+1);
+					}else if(collision == partner){
+						var $myScore = $(".myScore");
+						$myScore.text(1*$myScore.text()+1);
+					}
+				}
 			});
 
 			var gp = gamepad.get();
@@ -116,10 +129,23 @@ module.exports = {
 	},
 
 	updatePartnerState: function(state) {
+
 		with (state) {
 			partner.mesh.position.set(position.x, position.y, position.z);
 			partner.mesh.rotation.set(rotation.x, rotation.y, rotation.z);
 			partner.velocity.set(velocity.x, velocity.y, velocity.z);
+		}
+	}
+}
+
+function withinBounds(vector){
+	with (vector){
+		if (x < 2000 &&
+			y < 2000 &&
+			z < 2000){
+			return true;
+		}else{
+			return false;
 		}
 	}
 }
