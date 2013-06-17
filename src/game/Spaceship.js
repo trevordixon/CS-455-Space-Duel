@@ -65,6 +65,17 @@ _.extend(Spaceship.prototype, GravityObject.prototype, {
 			this.mesh.rotation.set(this.yaw, this.pitch, 0);
 
 			var dir = this.getDirection();
+			var thrust = gp.buttons[6] * .15;
+			if (thrust > 0){
+				var thrustAudio  = new Audio();
+				var thrustSrc  = document.createElement("source");
+				thrustSrc.type = "audio/mpeg";
+				thrustSrc.src  = "../../sounds/thrust.mp3";
+				console.log(thrustSrc.src);
+				thrustAudio.appendChild(thrustSrc);
+				thrustAudio.volume = .05;
+				thrustAudio.play();
+			}
 			this.velocity.add(dir.multiplyScalar(gp.buttons[6] * .15));
 		}
 

@@ -92,6 +92,17 @@ game.play = function() {
 				var bullet = new Bullet(spaceship, scene);
 				gravityObjects.push(bullet);
 				game.emit('bullet', bullet);
+				if (buttons[7] > 0.3 && prevButton7 == false) {
+					var bullet = new Bullet(spaceship, scene);
+					gravityObjects.push(bullet);
+					var shoot  = new Audio();
+					var shootsrc  = document.createElement("source");
+					shootsrc.type = "audio/mpeg";
+					shootsrc.src  = "../../sounds/laser.mp3";
+					console.log(shootsrc.src);
+					shoot.appendChild(shootsrc);
+					shoot.play();
+				}
 			}
 
 			prevButton7 = buttons[7] > 0.3;
