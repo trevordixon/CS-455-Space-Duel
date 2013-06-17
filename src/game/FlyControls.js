@@ -1,5 +1,5 @@
 var THREE = require('three'),
-	gpManager = require('./gamepadManager.js');
+	gamepad = require('./gamepad.js');
 
 /**
  * @author James Baicoianu / http://www.baicoianu.com/
@@ -39,15 +39,16 @@ THREE.FlyControls = function ( object, domElement ) {
 	};
 
 	this.update = function( delta ) {
-		if (gpManager.gamepad) {
-			this.moveState.yawLeft   = -gpManager.gamepad.axes[2];
-			this.moveState.pitchDown =   gpManager.gamepad.axes[3];
+		var gp = gamepad.get();
+		if (gp) {
+			this.moveState.yawLeft   = -gp.axes[2];
+			this.moveState.pitchDown =   gp.axes[3];
 			
-			this.moveState.rollLeft = (Math.abs(gpManager.gamepad.axes[0]) < 0.15 ? 0 : (this._watchForJoystickRoll && gpManager.gamepad.axes[0])) ||
-			                          gpManager.gamepad.buttons[15]/2;
+			this.moveState.rollLeft = (Math.abs(gp.axes[0]) < 0.15 ? 0 : (this._watchForJoystickRoll && gp.axes[0])) ||
+			                          gp.buttons[15]/2;
 
-			this.moveState.rollRight = (Math.abs(gpManager.gamepad.axes[1]) < 0.15 ? 0 : (this._watchForJoystickRoll && gpManager.gamepad.axes[1])) ||
-									   gpManager.gamepad.buttons[14]/2;
+			this.moveState.rollRight = (Math.abs(gp.axes[1]) < 0.15 ? 0 : (this._watchForJoystickRoll && gp.axes[1])) ||
+									   gp.buttons[14]/2;
 
 			this.updateRotationVector();
 		}

@@ -7,7 +7,7 @@ module.exports = {
 		var THREE = require('three'),
 			Spaceship = require('./Spaceship.js'),
 			Bullet = require('./Bullet.js'),
-			gpManager = require('./gamepadManager.js');
+			gamepad = require('./gamepad.js');
 
 		var scene = new THREE.Scene();
 
@@ -53,10 +53,10 @@ module.exports = {
 				obj.tick(time);
 			});
 
-			if (gpManager.gamepad) {
-				var gamepad = gpManager.gamepad,
-					axes = gamepad.axes,
-					buttons = gamepad.buttons;
+			var gp = gamepad.get();
+			if (gp) {
+				var axes = gp.axes,
+					buttons = gp.buttons;
 
 				if (camera == mainCamera) {
 					if (buttons[4]) {

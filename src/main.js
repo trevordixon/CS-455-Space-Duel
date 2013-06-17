@@ -1,4 +1,5 @@
-var cookie = require('./lib/cookie-monster');
+var _ = require('underscore'),
+	cookie = require('./lib/cookie-monster');
 
 var id = cookie.get('id'),
 	partner = cookie.get('partner'),
@@ -19,7 +20,7 @@ if (partner) {
 
 	conn.on('open', function() {
 		startGame();
-		conn.send(game.getState());
+		sendState();
 	});
 
 	conn.on('data', handlePeerData);
@@ -35,5 +36,9 @@ function startGame() {
 
 function handlePeerData(data) {
 	game.updatePartnerState(data);
-	conn.send(game.getState());
+	sendState();
 }
+
+var sendState = _.throttle(function() {
+	conn.send(game.getState());
+}, 30);

@@ -1,7 +1,7 @@
 var THREE = require('three'),
 	_ = require('underscore'),
 	geometry = require('./models/jetGeometry.js').geometry,
-	gpManager = require('./gamepadManager.js'),
+	gamepad = require('./gamepad.js'),
 	GravityObject = require('./GravityObject.js');
 
 require('./FlyControls.js');
@@ -55,8 +55,9 @@ _.extend(Spaceship.prototype, GravityObject.prototype, {
 	},
 
 	tick: function(time) {
-		if (gpManager.gamepad) {
-			var axes = gpManager.gamepad.axes;
+		var gp = gamepad.get();
+		if (gp) {
+			var axes = gp.axes;
 
 			this.yaw -= axes[3]/10;
 			this.pitch -= axes[2]/10;
@@ -64,7 +65,7 @@ _.extend(Spaceship.prototype, GravityObject.prototype, {
 			this.mesh.rotation.set(this.yaw, this.pitch, 0);
 
 			var dir = this.getDirection();
-			this.velocity.add(dir.multiplyScalar(gpManager.gamepad.buttons[6] * .15));
+			this.velocity.add(dir.multiplyScalar(gp.buttons[6] * .15));
 		}
 
 		this.controls.update(0.2);
