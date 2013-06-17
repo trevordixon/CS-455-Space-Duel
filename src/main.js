@@ -22,7 +22,6 @@ if (partner) {
 
 	conn.on('open', function() {
 		startGame();
-		sendState();
 	});
 
 	conn.on('data', handlePeerData);
@@ -34,13 +33,12 @@ function startGame() {
 		.addClass('connected');
 
 	game.play();
+
+	setInterval(function() {
+		if (conn) conn.send(game.getState());
+	}, 16);
 }
 
 function handlePeerData(data) {
 	game.updatePartnerState(data);
-	sendState();
 }
-
-var sendState = _.throttle(function() {
-	conn.send(game.getState());
-}, 30);
